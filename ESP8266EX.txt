@@ -1,0 +1,282 @@
+/***********************************************************************
+
+  【梦云固件】智慧固件模板
+  基于ESP8266EX芯片定制源码，可以移植到ESP32芯片中
+  开发者：梦云之家【萌小狸宝宝】
+
+  ESP8266EX-01与ESP8266EX-12固件更新信息（2018/5/29）
+  1、优化固件处理性能；
+  2、新增网页控制；
+  3、支持多设备同时初始化WiFi网络；
+  4、智能识别恢复出厂设置请求，不需要按键方式强制恢复出厂设置；
+  5、使用梦云实验室嵌入式自动化处理算法第三版本修订;
+  6、Wlan名称：MENGYUN、登入口令：”WIFI_” + Wlan名称;
+  7、默认调试助手传输数据80端口;
+
+***********************************************************************/
+//#include <ESP8266WebServer.h>
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <EEPROM.h>
+#define define_ssid "MENGYUN"
+#define define_password "WIFI_MENGYUN"
+void    (* resetFunc) (void) = 0;
+bool    data_light_state = false;
+WiFiServer variable_server(80);
+class mengyun_sdk_esp8266
+{
+  private:
+    char    data_ssid[0X20];
+    char    data_password[0X40];
+    char    data_scene[0X30];
+  public:
+    int modular_initialization_ap()
+    {
+      for (char data_count = 0X0; data_count <= 0X30; data_count++)
+        data_scene[data_count] = false;
+      for (char data_count = 0X0; data_count <= 0X40; data_count++)
+        data_password[data_count] = false;
+      data_scene[0] = false;
+      data_password[0] = false;
+      while (true)
+      {
+        WiFiClient client = variable_server.available();
+        String data_receive = client.readStringUntil('\r');
+        client.flush();
+        if (data_receive == "save")
+        {
+          client.print("save");
+          client.stop();
+          delay(100);
+          WiFi.disconnect();
+          modular_write_eeprom(data_ssid, data_password, data_scene);
+          resetFunc();
+        }
+        if (data_receive.indexOf("ssid=") != -1)
+        {
+          data_receive.replace("ssid=", "");
+          data_receive.toCharArray(data_ssid, 0X20);
+          client.print(data_ssid);
+        }
+        if (data_receive.indexOf("password=") != -1)
+        {
+          data_receive.replace("password=", "");
+          data_receive.toCharArray(data_password, 0X40);
+          client.print(data_password);
+        }
+        if (data_receive.indexOf("scene=") != -1)
+        {
+          data_receive.replace("scene=", "");
+          data_receive.toCharArray(data_scene, 0X30);
+          client.print(data_scene);
+        }
+        if (data_receive == "cancel" || WiFi.status() != WL_CONNECTED)
+        {
+          client.print("cancel");
+          client.stop();
+          modular_read_eeprom();
+          break;
+        }
+        if (data_receive == "0x0")client.print("address=0");
+        if (data_receive == "0x1")client.print("ssid=\"input\"");
+        if (data_receive == "0x2")client.print("password=\"input\"");
+        if (data_receive == "0x3")client.print("scene=\"input\"");
+        if (data_receive == "0x4")client.print("save");
+        if (data_receive == "0x5")client.print("cancel");
+        if (data_receive == "0x6")client.print("end");
+        client.stop();
+      }
+    }
+    int modular_read_eeprom()
+    {
+      short data_eeprom;
+      for (data_eeprom = 0X0; data_eeprom < 0X20; ++data_eeprom)
+        data_ssid[data_eeprom] = EEPROM.read(data_eeprom);
+      for (data_eeprom = 0X20; data_eeprom < 0X60; ++data_eeprom)
+        data_password[data_eeprom - 0X20] = EEPROM.read(data_eeprom);
+      for (data_eeprom = 0X60; data_eeprom < 0X90; ++data_eeprom)
+        data_scene[data_eeprom - 0X60] = EEPROM.read(data_eeprom);
+      return true;
+    }
+    int modular_write_eeprom(char *data_write_ssid, char *data_write_password, char *data_write_scene)
+    {
+      short data_eeprom;
+      for (data_eeprom = 0X0; data_eeprom <= 0X100; ++data_eeprom)
+        EEPROM.write(data_eeprom, 0);
+      for (data_eeprom = 0X0; data_eeprom < 0X20; ++data_eeprom)
+        EEPROM.write(data_eeprom, data_write_ssid[data_eeprom]);
+      for (data_eeprom = 0X20; data_eeprom < 0X60; ++data_eeprom)
+        EEPROM.write(data_eeprom, data_write_password[data_eeprom - 0X20]);
+      for (data_eeprom = 0X60; data_eeprom < 0X90; ++data_eeprom)
+        EEPROM.write(data_eeprom, data_scene[data_eeprom - 0X60]);
+      if (data_eeprom == 0X90)EEPROM.commit();
+      delay(5);
+      return true;
+    }
+    int modular_admin_ap()
+    {
+      bool data_ssid_judge = false;
+      char data_ssid_name = false;
+      char data_ssid_count = false;
+      while (WiFi.status() != WL_CONNECTED)
+      {
+        data_ssid_name = WiFi.scanNetworks();
+        for (; data_ssid_count < data_ssid_name; ++data_ssid_count)
+        {
+          if (WiFi.SSID(data_ssid_count) == data_ssid)data_ssid_judge = true;
+          if (data_ssid_name  == data_ssid_count + true && data_ssid_judge == true)
+          {
+            WiFi.begin(data_ssid, data_password);
+            while (WiFi.status() != WL_CONNECTED)delay(100);
+            return false;
+          }
+          if (data_ssid_name  == data_ssid_count + true && data_ssid_judge != true)
+          {
+            WiFi.begin(define_ssid, define_password);
+            while (WiFi.status() != WL_CONNECTED)delay(100);
+            modular_initialization_ap();
+            return true;
+          }
+        }
+      }
+    }
+    int modular_api()
+    {
+      short data_rssi = WiFi.RSSI();
+      WiFiClient client = variable_server.available();
+      String data_count = client.readStringUntil('\r');
+      client.flush();
+      if (data_count.indexOf("false") != -1)
+      {
+        if (data_count.indexOf("GET /") != -1); else
+          client.print("light=false");
+        digitalWrite(false, data_light_state = true );
+      }
+      if (data_count.indexOf("true") != -1)
+      {
+        if (data_count.indexOf("GET /") != -1); else
+          client.print("light=true");
+        digitalWrite(false, data_light_state = false);
+      }
+      if (data_count.indexOf("scene=") != -1)
+      {
+        if (data_count.indexOf("GET /") != -1); else
+          data_count.replace("scene=", "");
+        data_count.toCharArray(data_scene, 0X30);
+        modular_write_eeprom(data_ssid, data_password, data_scene);
+        client.print(data_scene);
+      }
+      if (data_count == "reset")
+      {
+        if (data_count.indexOf("GET /") != -1); else
+          client.print("reset");
+        client.stop();
+        modular_initialization_ap();
+        return true;
+      }
+      if (data_count == "0x0")client.print("address=1");
+      if (data_count == "0x1")
+      {
+        client.println("\r\nRunning information" );
+        client.println("brand=mengyun" );
+        client.println("model=AiL01" );
+        client.println("mcu=esp8266ex" );
+        client.println("device=esp-01s" );
+        client.println("edition=V18.5.29.9");
+        client.print("ssid=" );
+        client.println(data_ssid);
+        client.print("password=");
+        client.println(data_password);
+        client.print("dBm=");
+        client.println(data_rssi);
+        client.println("type=light");
+        client.print("scene=");
+        client.println(data_scene);
+        client.print("stat=");
+        client.println(data_light_state);
+      }
+      if (data_count == "0x2")client.print("dBm="), client.print(data_rssi);
+      if (data_count == "0x3")client.print("scene="), client.print(data_scene);
+      if (data_count == "0x4")
+      {
+        client.print("stat=");
+        if (data_light_state == true)client.print("0");
+        else client.print("1");
+      }
+      if (data_count == "0x5")client.print("light=false");
+      if (data_count == "0x6")client.print("light=true");
+      if (data_count == "0x7")client.print("scene=\"input\"");
+      if (data_count == "0x8")client.print("reset");
+      if (data_count == "0x9")client.print("end");
+      if (data_count.indexOf("GET /") != -1 || data_count.indexOf("index.html") != -1)
+      {
+        client.flush();
+        client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n");
+        client.print(modular_html_index());
+        //Serial.begin(115200);
+        //Serial.println(modular_html_index());
+        delay(100);
+        client.stop();
+      }
+      client.stop();
+      return false;
+    }
+    String modular_html_index()
+    {
+      short data_rssi = WiFi.RSSI();
+      String data_html_index = "\r\n";
+      data_html_index += " <!DOCTYPE html><html><head>";
+      data_html_index += "<meta http-equiv=\"refresh\" content=\"10\";url=\"index.html\" />";
+      data_html_index += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />";
+      data_html_index += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
+      data_html_index += "<title>"; data_html_index += data_scene; data_html_index += "灯泡管理 - 梦云之家</title>";
+      data_html_index += "</head><body><center><table width=\"100%\" border=\"1\">";
+      data_html_index += "<tr><td colspan=\"2\"><div align=\"center\"><pre><h2>"; data_html_index += data_scene; data_html_index += "灯泡基本运行信息</h2></pre></div></td></tr>";
+      data_html_index += "<tr><td width=\"35%\"><div align=\"right\">品牌-：</div></td><td width=\"100%\"><div align=\"left\">梦云之家</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">设备型号：</div></td><td><div align=\"left\">AiL01</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">处理器：</div></td><td><div align=\"left\">ESP8266EX</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">设备芯片：</div></td><td><div align=\"left\">ESP-01S</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">固件版本：</div></td><td><div align=\"left\">V18.5.29.9</div></td></tr>";
+      //data_html_index += "<tr><td><div align=\"right\">设备类型：</div></td><td><div align=\"left\">灯泡</div></td></tr>";
+      //data_html_index += "<tr><td><div align=\"right\">应用场景：</div></td><td><div align=\"left\">"; data_html_index += data_scene; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">运行状态：</div></td><td><div align=\"left\">";
+      if (data_light_state == true)data_html_index += "已关闭<a href=\"index.html?true\"><button>开启</button></a>";
+      if (data_light_state == false)data_html_index += "已开启<a href=\"index.html?false\"><button>关闭</button></a>";
+      data_html_index += "</div></td></tr>";
+      /*
+        if (data_light_state == false)data_html_index += "已关闭";
+        if (data_light_state == true)data_html_index += "已开启";
+        data_html_index += "</div></td></tr>";
+        data_html_index += "<tr><td><div align=\"right\">控制选项：</div></td><td><div align=\"left\">";
+        if (data_light_state == false)
+        data_html_index += "<a href=\"index.html?true\"><button>开启</button></a>";
+        if (data_light_state == true)
+        data_html_index += "<a href=\"index.html?false\"><button>关闭</button></a>";
+        data_html_index += "</div></td></tr>";
+      */
+      data_html_index += "<tr><td><div align=\"right\">MAC地址：</div></td><td><div align=\"left\">"; data_html_index += WiFi.macAddress(); data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">无线网络名称：</div></td><td><div align=\"left\">"; data_html_index += data_ssid; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">无线网络密码：</div></td><td><div align=\"left\">"; data_html_index += data_password; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">无线网络信号：</div></td><td><div align=\"left\">"; data_html_index += data_rssi; data_html_index += "</div></td></tr>";
+      data_html_index += "</table></center></body></html>";
+      data_html_index += "\n";
+      return data_html_index;
+    }
+
+    ~mengyun_sdk_esp8266() {}
+} mengyun;
+
+void setup()
+{
+  pinMode(false, OUTPUT);
+  digitalWrite(false, data_light_state);
+  WiFi.mode(WIFI_STA);
+  EEPROM.begin(0X100);
+  variable_server.begin();
+  mengyun.modular_read_eeprom();
+}
+
+void loop()
+{
+  (WiFi.status() == WL_CONNECTED) ? mengyun.modular_api() : mengyun.modular_admin_ap();
+}
