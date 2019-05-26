@@ -1,17 +1,17 @@
 /***********************************************************************
 
-  ¡¾ÃÎÔÆ¹Ì¼ş¡¿ÖÇ»Û¹Ì¼şÄ£°å
-  »ùÓÚESP8266EXĞ¾Æ¬¶¨ÖÆÔ´Âë£¬¿ÉÒÔÒÆÖ²µ½ESP32Ğ¾Æ¬ÖĞ
-  ¿ª·¢Õß£ºÃÎÔÆÖ®¼Ò¡¾ÃÈĞ¡Àê±¦±¦¡¿
+  ã€æ¢¦äº‘å›ºä»¶ã€‘æ™ºæ…§å›ºä»¶æ¨¡æ¿
+  åŸºäºESP8266EXèŠ¯ç‰‡å®šåˆ¶æºç ï¼Œå¯ä»¥ç§»æ¤åˆ°ESP32èŠ¯ç‰‡ä¸­
+  å¼€å‘è€…ï¼šæ¢¦äº‘ä¹‹å®¶ã€èŒå°ç‹¸å®å®ã€‘
 
-  ESP8266EX-01ÓëESP8266EX-12¹Ì¼ş¸üĞÂĞÅÏ¢£¨2018/5/29£©
-  1¡¢ÓÅ»¯¹Ì¼ş´¦ÀíĞÔÄÜ£»
-  2¡¢ĞÂÔöÍøÒ³¿ØÖÆ£»
-  3¡¢Ö§³Ö¶àÉè±¸Í¬Ê±³õÊ¼»¯WiFiÍøÂç£»
-  4¡¢ÖÇÄÜÊ¶±ğ»Ö¸´³ö³§ÉèÖÃÇëÇó£¬²»ĞèÒª°´¼ü·½Ê½Ç¿ÖÆ»Ö¸´³ö³§ÉèÖÃ£»
-  5¡¢Ê¹ÓÃÃÎÔÆÊµÑéÊÒÇ¶ÈëÊ½×Ô¶¯»¯´¦ÀíËã·¨µÚÈı°æ±¾ĞŞ¶©;
-  6¡¢WlanÃû³Æ£ºMENGYUN¡¢µÇÈë¿ÚÁî£º¡±WIFI_¡± + WlanÃû³Æ;
-  7¡¢Ä¬ÈÏµ÷ÊÔÖúÊÖ´«ÊäÊı¾İ80¶Ë¿Ú;
+  ESP8266EX-01ä¸ESP8266EX-12å›ºä»¶æ›´æ–°ä¿¡æ¯ï¼ˆ2018/5/29ï¼‰
+  1ã€ä¼˜åŒ–å›ºä»¶å¤„ç†æ€§èƒ½ï¼›
+  2ã€æ–°å¢ç½‘é¡µæ§åˆ¶ï¼›
+  3ã€æ”¯æŒå¤šè®¾å¤‡åŒæ—¶åˆå§‹åŒ–WiFiç½‘ç»œï¼›
+  4ã€æ™ºèƒ½è¯†åˆ«æ¢å¤å‡ºå‚è®¾ç½®è¯·æ±‚ï¼Œä¸éœ€è¦æŒ‰é”®æ–¹å¼å¼ºåˆ¶æ¢å¤å‡ºå‚è®¾ç½®ï¼›
+  5ã€ä½¿ç”¨æ¢¦äº‘å®éªŒå®¤åµŒå…¥å¼è‡ªåŠ¨åŒ–å¤„ç†ç®—æ³•ç¬¬ä¸‰ç‰ˆæœ¬ä¿®è®¢;
+  6ã€Wlanåç§°ï¼šMENGYUNã€ç™»å…¥å£ä»¤ï¼šâ€WIFI_â€ + Wlanåç§°;
+  7ã€é»˜è®¤è°ƒè¯•åŠ©æ‰‹ä¼ è¾“æ•°æ®80ç«¯å£;
 
 ***********************************************************************/
 //#include <ESP8266WebServer.h>
@@ -229,35 +229,35 @@ class mengyun_sdk_esp8266
       data_html_index += "<meta http-equiv=\"refresh\" content=\"10\";url=\"index.html\" />";
       data_html_index += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />";
       data_html_index += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
-      data_html_index += "<title>"; data_html_index += data_scene; data_html_index += "µÆÅİ¹ÜÀí - ÃÎÔÆÖ®¼Ò</title>";
+      data_html_index += "<title>"; data_html_index += data_scene; data_html_index += "ç¯æ³¡ç®¡ç† - æ¢¦äº‘ä¹‹å®¶</title>";
       data_html_index += "</head><body><center><table width=\"100%\" border=\"1\">";
-      data_html_index += "<tr><td colspan=\"2\"><div align=\"center\"><pre><h2>"; data_html_index += data_scene; data_html_index += "µÆÅİ»ù±¾ÔËĞĞĞÅÏ¢</h2></pre></div></td></tr>";
-      data_html_index += "<tr><td width=\"35%\"><div align=\"right\">Æ·ÅÆ-£º</div></td><td width=\"100%\"><div align=\"left\">ÃÎÔÆÖ®¼Ò</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">Éè±¸ĞÍºÅ£º</div></td><td><div align=\"left\">AiL01</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">´¦ÀíÆ÷£º</div></td><td><div align=\"left\">ESP8266EX</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">Éè±¸Ğ¾Æ¬£º</div></td><td><div align=\"left\">ESP-01S</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">¹Ì¼ş°æ±¾£º</div></td><td><div align=\"left\">V18.5.29.9</div></td></tr>";
-      //data_html_index += "<tr><td><div align=\"right\">Éè±¸ÀàĞÍ£º</div></td><td><div align=\"left\">µÆÅİ</div></td></tr>";
-      //data_html_index += "<tr><td><div align=\"right\">Ó¦ÓÃ³¡¾°£º</div></td><td><div align=\"left\">"; data_html_index += data_scene; data_html_index += "</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">ÔËĞĞ×´Ì¬£º</div></td><td><div align=\"left\">";
-      if (data_light_state == true)data_html_index += "ÒÑ¹Ø±Õ<a href=\"index.html?true\"><button>¿ªÆô</button></a>";
-      if (data_light_state == false)data_html_index += "ÒÑ¿ªÆô<a href=\"index.html?false\"><button>¹Ø±Õ</button></a>";
+      data_html_index += "<tr><td colspan=\"2\"><div align=\"center\"><pre><h2>"; data_html_index += data_scene; data_html_index += "ç¯æ³¡åŸºæœ¬è¿è¡Œä¿¡æ¯</h2></pre></div></td></tr>";
+      data_html_index += "<tr><td width=\"35%\"><div align=\"right\">å“ç‰Œï¼š</div></td><td width=\"100%\"><div align=\"left\">æ¢¦äº‘ä¹‹å®¶</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">è®¾å¤‡å‹å·ï¼š</div></td><td><div align=\"left\">AiL01</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">å¤„ç†å™¨ï¼š</div></td><td><div align=\"left\">ESP8266EX</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">è®¾å¤‡èŠ¯ç‰‡ï¼š</div></td><td><div align=\"left\">ESP-01S</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">å›ºä»¶ç‰ˆæœ¬ï¼š</div></td><td><div align=\"left\">V18.5.29.9</div></td></tr>";
+      //data_html_index += "<tr><td><div align=\"right\">è®¾å¤‡ç±»å‹ï¼š</div></td><td><div align=\"left\">ç¯æ³¡</div></td></tr>";
+      //data_html_index += "<tr><td><div align=\"right\">åº”ç”¨åœºæ™¯ï¼š</div></td><td><div align=\"left\">"; data_html_index += data_scene; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">è¿è¡ŒçŠ¶æ€ï¼š</div></td><td><div align=\"left\">";
+      if (data_light_state == true)data_html_index += "å·²å…³é—­<a href=\"index.html?true\"><button>å¼€å¯</button></a>";
+      if (data_light_state == false)data_html_index += "å·²å¼€å¯<a href=\"index.html?false\"><button>å…³é—­</button></a>";
       data_html_index += "</div></td></tr>";
       /*
-        if (data_light_state == false)data_html_index += "ÒÑ¹Ø±Õ";
-        if (data_light_state == true)data_html_index += "ÒÑ¿ªÆô";
+        if (data_light_state == false)data_html_index += "å·²å…³é—­";
+        if (data_light_state == true)data_html_index += "å·²å¼€å¯";
         data_html_index += "</div></td></tr>";
-        data_html_index += "<tr><td><div align=\"right\">¿ØÖÆÑ¡Ïî£º</div></td><td><div align=\"left\">";
+        data_html_index += "<tr><td><div align=\"right\">æ§åˆ¶é€‰é¡¹ï¼š</div></td><td><div align=\"left\">";
         if (data_light_state == false)
-        data_html_index += "<a href=\"index.html?true\"><button>¿ªÆô</button></a>";
+        data_html_index += "<a href=\"index.html?true\"><button>å¼€å¯</button></a>";
         if (data_light_state == true)
-        data_html_index += "<a href=\"index.html?false\"><button>¹Ø±Õ</button></a>";
+        data_html_index += "<a href=\"index.html?false\"><button>å…³é—­</button></a>";
         data_html_index += "</div></td></tr>";
       */
-      data_html_index += "<tr><td><div align=\"right\">MACµØÖ·£º</div></td><td><div align=\"left\">"; data_html_index += WiFi.macAddress(); data_html_index += "</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">ÎŞÏßÍøÂçÃû³Æ£º</div></td><td><div align=\"left\">"; data_html_index += data_ssid; data_html_index += "</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">ÎŞÏßÍøÂçÃÜÂë£º</div></td><td><div align=\"left\">"; data_html_index += data_password; data_html_index += "</div></td></tr>";
-      data_html_index += "<tr><td><div align=\"right\">ÎŞÏßÍøÂçĞÅºÅ£º</div></td><td><div align=\"left\">"; data_html_index += data_rssi; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">MACåœ°å€ï¼š</div></td><td><div align=\"left\">"; data_html_index += WiFi.macAddress(); data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">æ— çº¿ç½‘ç»œåç§°ï¼š</div></td><td><div align=\"left\">"; data_html_index += data_ssid; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">æ— çº¿ç½‘ç»œå¯†ç ï¼š</div></td><td><div align=\"left\">"; data_html_index += data_password; data_html_index += "</div></td></tr>";
+      data_html_index += "<tr><td><div align=\"right\">æ— çº¿ç½‘ç»œä¿¡å·ï¼š</div></td><td><div align=\"left\">"; data_html_index += data_rssi; data_html_index += "</div></td></tr>";
       data_html_index += "</table></center></body></html>";
       data_html_index += "\n";
       return data_html_index;
