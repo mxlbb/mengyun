@@ -6,6 +6,9 @@
 
 通过网络可以随时调用。
 
+开发语言：C/C++
+通信方法：HTTP/WebSocket(Socket)/RPC
+
 
 # 测试固件支持列表：
 
