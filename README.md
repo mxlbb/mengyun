@@ -6,9 +6,11 @@
 
 通过网络可以随时调用。
 
-开发语言：C/C++
+开发语言：C/C++/Html
 
 通信方法：HTTP/WebSocket(Socket)/RPC
+
+附属框架：X509(SSL/TSL)
 
 
 # 测试固件支持列表：
