@@ -8,7 +8,7 @@
 
 开发语言：C/C++/Html
 
-通信方法：HTTP/WebSocket(Socket)/RPC
+通信方法：HTTP/WebSocket(Socket)/RPC/MQTT
 
 附属框架：X509(SSL/TSL)
 
